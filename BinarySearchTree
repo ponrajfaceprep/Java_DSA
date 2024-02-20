@@ -1,0 +1,132 @@
+public class BinarySearchTree {
+
+    private Node root;
+
+    public BinarySearchTree() {
+        root = null;
+    }
+
+    public void insert(int data) {
+        Node newNode = new Node(data);
+        if (root == null) {
+            root = newNode;
+        } else {
+            insertNode(root, newNode);
+        }
+    }
+
+    private void insertNode(Node currentNode, Node newNode) {
+        if (newNode.data < currentNode.data) {
+            if (currentNode.left == null) {
+                currentNode.left = newNode;
+            } else {
+                insertNode(currentNode.left, newNode);
+            }
+        } else {
+            if (currentNode.right == null) {
+                currentNode.right = newNode;
+            } else {
+                insertNode(currentNode.right, newNode);
+            }
+        }
+    }
+
+    public boolean search(int data) {
+        Node currentNode = root;
+        while (currentNode != null) {
+            if (currentNode.data == data) {
+                return true;
+            } else if (data < currentNode.data) {
+                currentNode = currentNode.left;
+            } else {
+                currentNode = currentNode.right;
+            }
+        }
+        return false;
+    }
+
+    public void delete(int data) {
+        root = deleteNode(root, data);
+    }
+
+    private Node deleteNode(Node currentNode, int data) {
+        if (currentNode == null) {
+            return null;
+        }
+
+        if (data < currentNode.data) {
+            currentNode.left = deleteNode(currentNode.left, data);
+        } else if (data > currentNode.data) {
+            currentNode.right = deleteNode(currentNode.right, data);
+        } else {
+            if (currentNode.left == null && currentNode.right == null) {
+                currentNode = null;
+            } else if (currentNode.left == null) {
+                currentNode = currentNode.right;
+            } else if (currentNode.right == null) {
+                currentNode = currentNode.left;
+            } else {
+                Node minNode = findMinNode(currentNode.right);
+                currentNode.data = minNode.data;
+                currentNode.right = deleteNode(currentNode.right, minNode.data);
+            }
+        }
+
+        return currentNode;
+    }
+
+    private Node findMinNode(Node currentNode) {
+        while (currentNode.left != null) {
+            currentNode = currentNode.left;
+        }
+        return currentNode;
+    }
+
+    public void inorderTraversal() {
+        inorderTraversal(root);
+    }
+
+    private void inorderTraversal(Node currentNode) {
+        if (currentNode != null) {
+            inorderTraversal(currentNode.left);
+            System.out.println(currentNode.data);
+            inorderTraversal(currentNode.right);
+        }
+    }
+
+    public static void main(String[] args) {
+        BinarySearchTree bst = new BinarySearchTree();
+        bst.insert(10);
+        bst.insert(5);
+        bst.insert(15);
+        bst.insert(3);
+        bst.insert(7);
+        bst.insert(12);
+        bst.insert(20);
+
+        System.out.println("Inorder traversal:");
+        bst.inorderTraversal();
+
+        System.out.println("Search for 15:");
+        System.out.println(bst.search(15));
+
+        System.out.println("Delete 15:");
+        bst.delete(15);
+
+        System.out.println("Inorder traversal:");
+        bst.inorderTraversal();
+    }
+}
+
+class Node {
+
+    int data;
+    Node left;
+    Node right;
+
+    public Node(int data) {
+        this.data = data;
+        left = null;
+        right = null;
+    }
+}
